@@ -2,6 +2,9 @@ package com.tsinghua.kgeducator.tool;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.tsinghua.kgeducator.entity.User;
+import com.tsinghua.kgeducator.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -13,6 +16,9 @@ import java.util.Map;
 
 @Component
 public class LoginInterceptor implements HandlerInterceptor {
+    @Autowired
+    private UserService userService;
+    private Map<String,Object> map;
     //    在请求处理之前调用,只有返回true才会执行要执行的请求
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception
@@ -21,27 +27,23 @@ public class LoginInterceptor implements HandlerInterceptor {
            return true;
         }
         httpServletResponse.setCharacterEncoding("UTF-8");
-        String token=httpServletRequest.getHeader("Token");
+        String token = httpServletRequest.getHeader("Token");
+        map = new HashMap<>();
         if(null == token)
         {
-            Map<String,Object> map = new HashMap<>();
-            map.put("data","Token is null");
-            map.put("code","401");
-            httpServletResponse.getWriter().write(JSONObject.toJSONString(map));
+            map.put("msg","Token is null");
         }
         else
         {
             boolean result= Token.verify(token);
-            if (result)
+            if (result && userService.getUserById(Token.getUserId(token)) != null)
             {
                 return true;
             }
-            Map<String,Object> map=new HashMap<>();
-            map.put("data","Token is invalid");
-            map.put("code","401");
-            httpServletResponse.getWriter().write(JSONObject.toJSONString(map));
-
+            map.put("msg","Token is invalid");
         }
+        map.put("code","401");
+        httpServletResponse.getWriter().write(JSONObject.toJSONString(map));
         return false;
     }
 
@@ -58,6 +60,4 @@ public class LoginInterceptor implements HandlerInterceptor {
     {
 
     }
-
-
 }

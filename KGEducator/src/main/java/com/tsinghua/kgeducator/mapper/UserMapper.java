@@ -13,8 +13,6 @@ public interface UserMapper
 
     User getUserById(Integer id);
 
-    List<User> getUsersByName(String name);
-
     User getUserByEmail(String email);
 
     Integer addUser(User user);

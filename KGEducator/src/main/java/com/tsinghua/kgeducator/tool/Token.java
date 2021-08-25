@@ -44,12 +44,12 @@ public class Token {
             return  false;
         }
     }
-    public static Long getUserId(String token)
+    public static Integer getUserId(String token)
     {
         try
         {
             DecodedJWT jwt = verifier.verify(token);
-            return jwt.getClaim("userId").asLong();
+            return jwt.getClaim("userId").asInt();
         }
         catch (JWTDecodeException e)
         {

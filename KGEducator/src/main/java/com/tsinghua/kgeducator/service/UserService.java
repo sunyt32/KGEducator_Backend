@@ -28,11 +28,6 @@ public class UserService
         return userMapper.getUserByEmail(email);
     }
 
-    public List<User> getUsersByName(String name)
-    {
-        return userMapper.getUsersByName(name);
-    }
-
     public Integer addUser(User user)
     {
         return userMapper.addUser(user);
