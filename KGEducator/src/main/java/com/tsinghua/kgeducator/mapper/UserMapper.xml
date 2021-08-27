@@ -9,9 +9,11 @@
         <result column="password" property="password" jdbcType="VARCHAR" />
         <result column="grade" property="grade" jdbcType="INTEGER" />
         <result column="subject" property="subject" jdbcType="INTEGER" />
+        <result column="collection" property="collection" jdbcType="VARCHAR" />
+        <result column="history" property="history" jdbcType="VARCHAR" />
     </resultMap>
 
-    <select id="findAll" resultMap="User">
+    <select id="getAllUsers" resultMap="User">
         SELECT * FROM USER
     </select>
 
@@ -24,11 +26,11 @@
     </select>
 
     <select id="addUser" resultType="Integer" >
-        INSERT INTO USER VALUES(NULL, #{email}, #{password}, #{name}, #{grade}, #{subject})
+        INSERT INTO USER VALUES(NULL, #{email}, #{password}, #{name}, #{grade}, #{subject}, #{collection}, #{history})
     </select>
 
     <select id="updateUserById" resultType="Integer">
-        UPDATE USER SET EMAIL = #{email}, PASSWORD = #{password}, NAME = #{name}, GRADE = #{grade}, SUBJECT = #{subject} WHERE ID = #{id}
+        UPDATE USER SET EMAIL = #{email}, PASSWORD = #{password}, NAME = #{name}, GRADE = #{grade}, SUBJECT = #{subject}, COLLECTION = #{collection}, HISTORY = #{history} WHERE ID = #{id}
     </select>
 
     <select id="deleteUserById" resultType="Integer">

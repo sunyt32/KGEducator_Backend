@@ -10,23 +10,30 @@ public class User implements Serializable
     public String name;//用户名
     public Integer grade;//年级
     public Integer subject; //对应的学科
+    public String collection;//收藏夹
+    public String history;//历史记录
 
     public User(String email, String password)
     {
         this.email = email;
         this.password = password;
         this.subject = 0x1FF;
+        this.collection = "[]";
+        this.history = "[]";
+
     }
 
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
-                ", grade=" + grade + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", grade=" + grade +
                 ", subject=" + subject +
+                ", collection='" + collection + '\'' +
+                ", history='" + history + '\'' +
                 '}';
     }
 }

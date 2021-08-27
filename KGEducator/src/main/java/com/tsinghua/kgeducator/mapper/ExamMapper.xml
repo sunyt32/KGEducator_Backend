@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.tsinghua.kgeducator.mapper.ExamMapper">
+    <resultMap id="Exam" type="com.tsinghua.kgeducator.entity.Exam" >
+        <result column="pid" property="pid" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="body" property="body" jdbcType="VARCHAR" />
+        <result column="realAns" property="realAns" jdbcType="VARCHAR" />
+        <result column="userAns" property="userAns" jdbcType="VARCHAR" />
+        <result column="userId" property="userId" jdbcType="INTEGER" />
+    </resultMap>
+
+    <select id="getAllExams" resultMap="Exam">
+        SELECT * FROM Exam
+    </select>
+
+    <select id="getExamsByUserId" resultMap="Exam">
+        SELECT * FROM Exam WHERE USERID = #{userId}
+    </select>
+
+    <select id="getWrongExamsByUserId" resultMap="Exam">
+        SELECT * FROM Exam WHERE USERID = #{userId} AND REALANS IS NOT USERANS
+    </select>
+
+    <select id="getExamsByPid" resultMap="Exam">
+        SELECT * FROM Exam WHERE PID = #{pid}
+    </select>
+
+    <select id="addExam" resultType="Integer" >
+        INSERT INTO Exam VALUES(#{pid}, #{name}, #{body}, #{realAns}, #{userAns}, #{userId})
+    </select>
+
+</mapper>
