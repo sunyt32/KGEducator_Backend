@@ -10,6 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.*;
 
 @Controller
@@ -32,7 +35,7 @@ public class MyController
     }
     @RequestMapping (value = "/login", method = RequestMethod.POST)
     @ResponseBody
-    public String login(HttpServletRequest request)
+    public String login(HttpServletRequest request, HttpServletResponse response)
     {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
@@ -41,24 +44,23 @@ public class MyController
         if(user == null)
         {
             map.put("msg", "The user doesn't exists");
-            map.put("code","401");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
         else if(Objects.equals(user.password, password))
         {
             map.put("Token", Token.token(user.id));
-            map.put("code","200");
         }
         else
         {
             map.put("msg", "Wrong password");
-            map.put("code","401");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
         return JSONObject.toJSONString(map);
     }
 
     @RequestMapping (value = "/register", method = RequestMethod.POST)
     @ResponseBody
-    public String register(HttpServletRequest request)
+    public String register(HttpServletRequest request, HttpServletResponse response)
     {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
@@ -67,18 +69,43 @@ public class MyController
         {
             userService.addUser(user);
             map.put("Token", Token.token(userService.getUserByEmail(email).id));
-            map.put("code","200");
         }
         else if(userService.getUserByEmail(email) != null)
         {
             map.put("msg", "User exists");
-            map.put("code","401");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
         else
         {
             map.put("msg", "Invalid Email Address");
-            map.put("code","401");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
+        return JSONObject.toJSONString(map);
+    }
+
+    @RequestMapping (value = "/info/upload", method = RequestMethod.POST)
+    @ResponseBody
+    public String uploadInfo(HttpServletRequest request)
+    {
+        map = new HashMap<>();
+        User user = getUserByToken(request.getHeader("Token"));
+        user.name = request.getParameter("name");
+        user.grade = Integer.valueOf(request.getParameter("grade"));
+        userService.updateUserById(user);
+        map.put("msg", "Success");
+        return JSONObject.toJSONString(map);
+    }
+
+    @RequestMapping (value = "/info/download", method = RequestMethod.GET)
+    @ResponseBody
+    public String downloadInfo(HttpServletRequest request)
+    {
+        map = new HashMap<>();
+        HashMap<String, Object> info = new HashMap<>();
+        User user = getUserByToken(request.getHeader("Token"));
+        info.put("name", user.name);
+        info.put("grade", user.grade);
+        map.put("data", info);
         return JSONObject.toJSONString(map);
     }
 
@@ -91,7 +118,6 @@ public class MyController
         user.subject = userService.assembleSubject(request.getParameter("subject"));
         userService.updateUserById(user);
         map.put("msg", "Success");
-        map.put("code","200");
         return JSONObject.toJSONString(map);
     }
 
@@ -102,8 +128,7 @@ public class MyController
         map = new HashMap<>();
         User user = getUserByToken(request.getHeader("Token"));
         List<String> userSubjectList = userService.disassembleSubject(user.subject);
-        map.put("subject", userSubjectList);
-        map.put("code","200");
+        map.put("data", userSubjectList);
         return JSONObject.toJSONString(map);
     }
 
@@ -126,8 +151,7 @@ public class MyController
         }
         user.collection = userCollection.toString();
         userService.updateUserById(user);
-        map.put("collection", user.collection);
-        map.put("code","200");
+        map.put("data", user.collection);
         return JSONObject.toJSONString(map);
     }
 
@@ -143,7 +167,6 @@ public class MyController
         user.history = JSON.toJSONString(userHistory);
         userService.updateUserById(user);
         map.put("msg", "Success");
-        map.put("code","200");
         return JSONObject.toJSONString(map);
     }
 
@@ -154,7 +177,6 @@ public class MyController
         map = new HashMap<>();
         User user = getUserByToken(request.getHeader("Token"));
         map.put("data", user.history);
-        map.put("code","200");
         return JSONObject.toJSONString(map);
     }
 
@@ -170,7 +192,6 @@ public class MyController
             Exam newExam = new Exam(Integer.parseInt(history.get("id")), history.get("name"), history.get("body"), history.get("realAns"), history.get("userAns"), user.id);
             examService.addExam(newExam);
         }
-        map.put("code","200");
         map.put("msg", "Success");
         return JSONObject.toJSONString(map);
     }
@@ -182,7 +203,6 @@ public class MyController
         map = new HashMap<>();
         User user = getUserByToken(request.getHeader("Token"));
         List<String> finalExams = examService.recommendExams(user.id);
-        map.put("code","200");
         map.put("data", finalExams.toString());
         return JSONObject.toJSONString(map);
     }

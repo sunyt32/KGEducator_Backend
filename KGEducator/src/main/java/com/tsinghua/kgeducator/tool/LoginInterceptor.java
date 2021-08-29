@@ -42,7 +42,6 @@ public class LoginInterceptor implements HandlerInterceptor {
             }
             map.put("msg","Token is invalid");
         }
-        map.put("code","401");
         httpServletResponse.getWriter().write(JSONObject.toJSONString(map));
         return false;
     }

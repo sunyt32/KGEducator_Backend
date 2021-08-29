@@ -8,8 +8,6 @@
 ```
 如果忘记加入，或者加入了错误的Token，后端会直接返回Unauthorized信息：
 ```
-{
-  "code": "401",
   "msg": "Token is invalid"
 }
 ```
@@ -28,7 +26,6 @@
 ```
 {
 	"Token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjF9.CkZaotlKqW0J-iJwlEjiUrapjD9Fb8eNkYdQ4EHuUFU",
-	"code": "200"
 }
 ```
 ### 用户注册接口
@@ -45,11 +42,44 @@
 ```
 {
 	"Token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjF9.CkZaotlKqW0J-iJwlEjiUrapjD9Fb8eNkYdQ4EHuUFU",
-	"code": "200"
 }
 ```
 
 ## 数据接口部分
+### 上传用户信息接口
+- 请求方式：POST
+- URL：/info/upload
+#### 功能描述
+上传用户的昵称与年级。
+#### 参数
+| 参数名 | 描述 | 数据类型 |
+| ----- | -----| --------|
+| name | 用户昵称 | string |
+| grade | 用户年级 | int |
+#### 成功返回范例
+```
+{
+	"msg": "Success"
+}
+```
+
+### 下载用户信息接口
+- 请求方式：GET
+- URL：/info/download
+#### 功能描述
+下载用户的昵称与年级。
+#### 参数
+此接口不需要任何参数。
+#### 成功返回范例
+```
+{
+	"data": {
+		"name": "PrettyUU",
+		"grade": "1"
+	}
+}
+```
+
 ### 上传学科列表接口
 - 请求方式：POST
 - URL：/subject/upload
@@ -68,8 +98,7 @@
 #### 成功返回范例
 ```
 {
-	"msg": "Success",
-	"code": "200"
+	"msg": "Success"
 }
 ```
 ### 下载学科列表接口
@@ -82,8 +111,7 @@
 #### 成功返回范例
 ```
 {
-	"subject": ["chinese", "english"],
-	"code": "200"
+	"data": ["chinese", "english"]
 }
 ```
 ### 更改收藏夹接口
@@ -107,9 +135,8 @@
 #### 成功返回范例
 ```
 {
-	"collection": [["biology", "基因工程"],
-	["math", "分类节点"]],
-	"code": "200"
+	"data": [["biology", "基因工程"],
+	["math", "分类节点"]]
 }
 ```
 ### 上传访问记录接口
@@ -131,8 +158,7 @@
 #### 成功返回范例
 ```
 {
-	"msg": "Success",
-	"code": "200"
+	"msg": "Success"
 }
 ```
 
@@ -148,8 +174,7 @@
 ```
 {
 	"data": [["biology", "基因工程"],
-	["math", "分类节点"]],
-	"code": "200"
+	["math", "分类节点"]]
 }
 ```
 ### 上传考试记录接口
@@ -182,8 +207,7 @@
 #### 成功返回范例
 ```
 {
-	"msg": "Success",
-	"code": "200"
+	"msg": "Success"
 }
 ```
 ### 下载推荐试题接口
@@ -202,7 +226,6 @@
 #### 成功返回范例
 ```
 {
-	"code":"200",
 	"data":"[
 		{"qAnswer":"A",
 		"id":38937,
