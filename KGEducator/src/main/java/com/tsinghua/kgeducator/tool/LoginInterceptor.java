@@ -11,20 +11,32 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 @Component
 public class LoginInterceptor implements HandlerInterceptor {
-    @Autowired
     private UserService userService;
     private Map<String,Object> map;
-    //    在请求处理之前调用,只有返回true才会执行要执行的请求
-    @Override
+    private ArrayList<String> accessList;
+    public LoginInterceptor(UserService userService)
+    {
+        this.userService = userService;
+        accessList = new ArrayList<>();
+        accessList.add("/login");
+        accessList.add("/register");
+        accessList.add("/sendcode");
+        accessList.add("/changepwd");
+    }
+
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception
     {
-        if (httpServletRequest.getRequestURI().contains("/login") || httpServletRequest.getRequestURI().contains("/register")) {
-           return true;
+        for(String uri : accessList)
+        {
+            if (httpServletRequest.getRequestURI().contains(uri)) {
+                return true;
+            }
         }
         httpServletResponse.setCharacterEncoding("UTF-8");
         String token = httpServletRequest.getHeader("Token");

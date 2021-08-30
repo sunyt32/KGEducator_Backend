@@ -6,26 +6,31 @@ import com.tsinghua.kgeducator.entity.User;
 import com.tsinghua.kgeducator.service.ExamService;
 import com.tsinghua.kgeducator.service.UserService;
 import com.tsinghua.kgeducator.tool.Token;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.*;
+
+import static java.lang.Math.abs;
 
 @Controller
 public class MyController
 {
+    JavaMailSender javaMailSender;
     private UserService userService;
     private ExamService examService;
     static final String emailRegex = "^[0-9a-zA-Z]+\\w*@([0-9a-z]+\\.)*+[0-9a-z]+$";
-    Map<String,Object> map;
-    public MyController(UserService userService, ExamService examService)
+    private Map<String, Object> map;
+    private HashMap<String, String> codeMap = new HashMap<>();
+    public MyController(UserService userService, ExamService examService, JavaMailSender javaMailSender)
     {
         this.userService = userService;
         this.examService = examService;
+        this.javaMailSender = javaMailSender;
     }
     private User getUserByToken(String token)
     {
@@ -79,6 +84,48 @@ public class MyController
         {
             map.put("msg", "Invalid Email Address");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        }
+        return JSONObject.toJSONString(map);
+    }
+
+    @RequestMapping (value = "/sendcode", method = RequestMethod.POST)
+    @ResponseBody
+    public String sendCode(HttpServletRequest request)
+    {
+        String email = request.getParameter("email");
+        Random r = new Random(System.currentTimeMillis());
+        String code = String.valueOf(abs(r.nextInt()) % (999999 - 100000) + 100000);
+        codeMap.put(email, code);
+        map = new HashMap<>();
+        SimpleMailMessage message =	new SimpleMailMessage();
+        message.setFrom("sunyt32@163.com");
+        message.setSubject("验证码");
+        message.setTo(email);
+        message.setText("您的验证码为：\n" + code);
+        javaMailSender.send(message);
+        map.put("msg", "Success");
+        return JSONObject.toJSONString(map);
+    }
+
+    @RequestMapping (value = "/changepwd", method = RequestMethod.POST)
+    @ResponseBody
+    public String changePassword(HttpServletRequest request, HttpServletResponse response)
+    {
+        map = new HashMap<>();
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        String code = request.getParameter("code");
+        if(codeMap.get(email).equals(code))
+        {
+            User user = userService.getUserByEmail(email);
+            user.password = password;
+            userService.updateUserById(user);
+            map.put("msg", "Success");
+        }
+        else
+        {
+            map.put("msg", "Invalid Code");
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }
         return JSONObject.toJSONString(map);
     }

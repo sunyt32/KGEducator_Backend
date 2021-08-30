@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    driver-class-name: org.sqlite.JDBC
+    url: jdbc:sqlite::resource:static/sqlite/Database.db
+  mail:
+    host: smtp.163.com
+    username: sunyt32@163.com
+    password: OURWKBCLCJYPWWNQ
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+          enable: true
+          required: true
