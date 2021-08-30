@@ -83,7 +83,7 @@
                 <filtering>false</filtering>
                 <includes>
                     <include>**/*.db</include>
-                    <include>*.properties</include>
+                    <include>*.yml</include>
                     <include>**/*.xml</include>
                 </includes>
             </resource>
