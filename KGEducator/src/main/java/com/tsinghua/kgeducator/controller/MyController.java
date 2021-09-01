@@ -185,9 +185,9 @@ public class MyController
     {
         map = new HashMap<>();
         User user = getUserByToken(request.getHeader("Token"));
-        HashSet<String> userCollection = JSON.parseObject(user.collection, new TypeReference<HashSet<String>>(){});
-        List<String> delCollection = JSON.parseObject(request.getParameter("delete"), new TypeReference<List<String>>(){});
-        List<String> addCollection = JSON.parseObject(request.getParameter("add"), new TypeReference<List<String>>(){});
+        HashSet<List<String>> userCollection = JSON.parseObject(user.collection, new TypeReference<HashSet<List<String>>>(){});
+        List<List<String>> delCollection = JSON.parseObject(request.getParameter("delete"), new TypeReference<List<List<String>>>(){});
+        List<List<String>> addCollection = JSON.parseObject(request.getParameter("add"), new TypeReference<List<List<String>>>(){});
         if(delCollection != null)
         {
             delCollection.forEach(userCollection::remove);
@@ -196,7 +196,7 @@ public class MyController
         {
             userCollection.addAll(addCollection);
         }
-        user.collection = userCollection.toString();
+        user.collection = JSON.toJSONString(userCollection);
         userService.updateUserById(user);
         map.put("data", user.collection);
         return JSONObject.toJSONString(map);
@@ -208,8 +208,9 @@ public class MyController
     {
         map = new HashMap<>();
         User user = getUserByToken(request.getHeader("Token"));
-        List<String> userHistory = JSON.parseArray(user.history,String.class);
-        List<String> addHistory = JSON.parseArray(request.getParameter("history"), String.class);
+        List<List<String>> userHistory = JSON.parseObject(user.history, new TypeReference<List<List<String>>>(){});
+        List<List<String>> addHistory = JSON.parseObject(request.getParameter("history"), new TypeReference<List<List<String>>>(){});
+        userHistory.removeAll(addHistory);
         userHistory.addAll(addHistory);
         user.history = JSON.toJSONString(userHistory);
         userService.updateUserById(user);
