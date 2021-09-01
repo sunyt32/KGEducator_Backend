@@ -11,6 +11,7 @@
         <result column="subject" property="subject" jdbcType="INTEGER" />
         <result column="collection" property="collection" jdbcType="VARCHAR" />
         <result column="history" property="history" jdbcType="VARCHAR" />
+        <result column="search" property="search" jdbcType="VARCHAR" />
     </resultMap>
 
     <select id="getAllUsers" resultMap="User">
@@ -26,11 +27,11 @@
     </select>
 
     <select id="addUser" resultType="Integer" >
-        INSERT INTO USER VALUES(NULL, #{email}, #{password}, #{name}, #{grade}, #{subject}, #{collection}, #{history})
+        INSERT INTO USER VALUES(NULL, #{email}, #{password}, #{name}, #{grade}, #{subject}, #{collection}, #{history}, #{search})
     </select>
 
     <select id="updateUserById" resultType="Integer">
-        UPDATE USER SET EMAIL = #{email}, PASSWORD = #{password}, NAME = #{name}, GRADE = #{grade}, SUBJECT = #{subject}, COLLECTION = #{collection}, HISTORY = #{history} WHERE ID = #{id}
+        UPDATE USER SET EMAIL = #{email}, PASSWORD = #{password}, NAME = #{name}, GRADE = #{grade}, SUBJECT = #{subject}, COLLECTION = #{collection}, HISTORY = #{history}, SEARCH = #{search}  WHERE ID == #{id}
     </select>
 
     <select id="deleteUserById" resultType="Integer">

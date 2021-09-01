@@ -12,6 +12,7 @@ public class User implements Serializable
     public Integer subject; //对应的学科
     public String collection;//收藏夹
     public String history;//历史记录
+    public String search;
 
     public User(String email, String password)
     {
@@ -20,7 +21,7 @@ public class User implements Serializable
         this.subject = 0x1FF;
         this.collection = "[]";
         this.history = "[]";
-
+        this.search = "[]";
     }
 
     @Override
@@ -34,6 +35,7 @@ public class User implements Serializable
                 ", subject=" + subject +
                 ", collection='" + collection + '\'' +
                 ", history='" + history + '\'' +
+                ", search='" + search + '\'' +
                 '}';
     }
 }

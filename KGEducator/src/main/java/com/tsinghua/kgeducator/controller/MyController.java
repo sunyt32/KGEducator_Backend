@@ -228,6 +228,32 @@ public class MyController
         return JSONObject.toJSONString(map);
     }
 
+    @RequestMapping (value = "/search/upload", method = RequestMethod.POST)
+    @ResponseBody
+    public String uploadSearch(HttpServletRequest request)
+    {
+        map = new HashMap<>();
+        User user = getUserByToken(request.getHeader("Token"));
+        List<List<String>> userSearch = JSON.parseObject(user.search, new TypeReference<List<List<String>>>(){});
+        List<List<String>> addSearch = JSON.parseObject(request.getParameter("search"), new TypeReference<List<List<String>>>(){});
+        userSearch.removeAll(addSearch);
+        userSearch.addAll(addSearch);
+        user.search = JSON.toJSONString(userSearch);
+        userService.updateUserById(user);
+        map.put("msg", "Success");
+        return JSONObject.toJSONString(map);
+    }
+
+    @RequestMapping (value = "/search/download", method = RequestMethod.GET)
+    @ResponseBody
+    public String downloadSearch(HttpServletRequest request)
+    {
+        map = new HashMap<>();
+        User user = getUserByToken(request.getHeader("Token"));
+        map.put("data", user.search);
+        return JSONObject.toJSONString(map);
+    }
+
     @RequestMapping (value = "/exam/upload", method = RequestMethod.POST)
     @ResponseBody
     public String uploadExam(HttpServletRequest request)
