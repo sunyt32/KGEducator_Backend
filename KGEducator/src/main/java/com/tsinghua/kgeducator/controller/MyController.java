@@ -70,7 +70,8 @@ public class MyController
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         User user = new User(email, password);
-        map = new HashMap<>();if(userService.getUserByEmail(email) == null && email.matches(emailRegex))
+        map = new HashMap<>();
+        if(userService.getUserByEmail(email) == null && email.matches(emailRegex))
         {
             userService.addUser(user);
             map.put("Token", Token.token(userService.getUserByEmail(email).id));
@@ -78,27 +79,32 @@ public class MyController
         else if(userService.getUserByEmail(email) != null)
         {
             map.put("msg", "User exists");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }
         else
         {
             map.put("msg", "Invalid Email Address");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }
         return JSONObject.toJSONString(map);
     }
 
     @RequestMapping (value = "/sendcode", method = RequestMethod.POST)
     @ResponseBody
-    public String sendCode(HttpServletRequest request)
+    public String sendCode(HttpServletRequest request, HttpServletResponse response)
     {
         String email = request.getParameter("email");
+        if(userService.getUserByEmail(email) == null)
+        {
+            map.put("msg", "User exists");
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        }
         Random r = new Random(System.currentTimeMillis());
         String code = String.valueOf(abs(r.nextInt()) % (999999 - 100000) + 100000);
         codeMap.put(email, code);
         map = new HashMap<>();
         SimpleMailMessage message =	new SimpleMailMessage();
-        message.setFrom("sunyt32@163.com");
+        message.setFrom("1847767524@qq.com");
         message.setSubject("验证码");
         message.setTo(email);
         message.setText("您的验证码为：\n" + code);

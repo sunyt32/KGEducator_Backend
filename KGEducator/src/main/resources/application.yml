@@ -3,9 +3,9 @@ spring:
     driver-class-name: org.sqlite.JDBC
     url: jdbc:sqlite::resource:static/sqlite/Database.db
   mail:
-    host: smtp.163.com
-    username: sunyt32@163.com
-    password: OURWKBCLCJYPWWNQ
+    host: smtp.qq.com
+    username: 1847767524@qq.com
+    password: uddrxdogvmlwcafj
     properties:
       mail:
         smtp:
