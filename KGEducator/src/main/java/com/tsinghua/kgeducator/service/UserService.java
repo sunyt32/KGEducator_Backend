@@ -15,7 +15,7 @@ import java.util.List;
 public class UserService
 {
     UserMapper userMapper;
-    static final String[] subjectList = {"chinese", "english", "math", "physics", "chemistry", "biology", "history", "geo", "politics"};
+//    static final String[] subjectList = {"chinese", "english", "math", "physics", "chemistry", "biology", "history", "geo", "politics"};
     public UserService(UserMapper userMapper)
     {
         this.userMapper = userMapper;
@@ -55,33 +55,33 @@ public class UserService
         userMapper.deleteAllUsers();
     }
 
-    public Integer assembleSubject(String subjects)
-    {
-        int subjectMap = 0;
-        List<String> userSubjectList = JSON.parseArray(subjects, String.class);
-        for(String userSubject : userSubjectList)
-        {
-            for(int i = 0; i < subjectList.length; i++)
-            {
-                if(userSubject.equals(subjectList[i]))
-                {
-                    subjectMap |= (1 << i);
-                }
-            }
-        }
-        return subjectMap;
-    }
-
-    public List<String> disassembleSubject(int subjectMap)
-    {
-        List<String> userSubjectList = new ArrayList<>();
-        for(int i = 0; i < subjectList.length; i++)
-        {
-            if(((subjectMap >> i) & 1) == 1)
-            {
-                userSubjectList.add(subjectList[i]);
-            }
-        }
-        return userSubjectList;
-    }
+//    public Integer assembleSubject(String subjects)
+//    {
+//        int subjectMap = 0;
+//        List<String> userSubjectList = JSON.parseArray(subjects, String.class);
+//        for(String userSubject : userSubjectList)
+//        {
+//            for(int i = 0; i < subjectList.length; i++)
+//            {
+//                if(userSubject.equals(subjectList[i]))
+//                {
+//                    subjectMap |= (1 << i);
+//                }
+//            }
+//        }
+//        return subjectMap;
+//    }
+//
+//    public List<String> disassembleSubject(int subjectMap)
+//    {
+//        List<String> userSubjectList = new ArrayList<>();
+//        for(int i = 0; i < subjectList.length; i++)
+//        {
+//            if(((subjectMap >> i) & 1) == 1)
+//            {
+//                userSubjectList.add(subjectList[i]);
+//            }
+//        }
+//        return userSubjectList;
+//    }
 }

@@ -9,7 +9,7 @@ public class User implements Serializable
     public String password;//密码
     public String name;//用户名
     public Integer grade;//年级
-    public Integer subject; //对应的学科
+    public String subject; //对应的学科
     public String collection;//收藏夹
     public String history;//历史记录
     public String search;
@@ -18,7 +18,7 @@ public class User implements Serializable
     {
         this.email = email;
         this.password = password;
-        this.subject = 0x1FF;
+        this.subject = "[\"chinese\", \"math\", \"english\", \"physics\", \"history\", \"chemistry\", \"biology\", \"geo\", \"politics\"]";
         this.collection = "[]";
         this.history = "[]";
         this.search = "[]";

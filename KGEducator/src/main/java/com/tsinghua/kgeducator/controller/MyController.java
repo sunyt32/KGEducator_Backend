@@ -162,7 +162,7 @@ public class MyController
     {
         map = new HashMap<>();
         User user = getUserByToken(request.getHeader("Token"));
-        user.subject = userService.assembleSubject(request.getParameter("subject"));
+        user.subject = request.getParameter("subject");
         userService.updateUserById(user);
         map.put("msg", "Success");
         return JSONObject.toJSONString(map);
@@ -174,7 +174,7 @@ public class MyController
     {
         map = new HashMap<>();
         User user = getUserByToken(request.getHeader("Token"));
-        List<String> userSubjectList = userService.disassembleSubject(user.subject);
+        String userSubjectList = user.subject;
         map.put("data", userSubjectList);
         return JSONObject.toJSONString(map);
     }
