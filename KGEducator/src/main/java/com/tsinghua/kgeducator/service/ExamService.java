@@ -80,7 +80,7 @@ public class ExamService
         return examMapper.addExam(Exam);
     }
 
-    private List<String> getNewExams(String name)
+    private String getNewExams(String name)
     {
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
@@ -88,7 +88,7 @@ public class ExamService
         String url = "http://open.edukg.cn/opedukg/api/typeOpen/open/questionListByUriName?id={id}&uriName={uriName}";
         ResponseEntity<String> getForEntity = restTemplate.getForEntity(url, String.class, params);
         HashMap<String, String> body = JSON.parseObject(getForEntity.getBody(),new TypeReference<HashMap<String, String>>(){});
-        return JSON.parseArray(body.get("data"), String.class);
+        return body.get("data");
     }
 
     public List<String> recommendExams(Integer userId)
@@ -107,6 +107,7 @@ public class ExamService
             {
                 entities.add(exam.name);
                 inputExam = new HashMap<>();
+                inputExam.put("name", exam.name);
                 inputExam.put("qAnswer", exam.realAns);
                 inputExam.put("id", exam.pid.toString());
                 inputExam.put("qBody", exam.body);
@@ -145,16 +146,19 @@ public class ExamService
         if(!entities.contains(entity))
         {
             entities.add(entity);
-            List<String> newExams = getNewExams(entity);
-            if(newExams.size() < 1)
+            List<Map<String, String>> newExams = JSON.parseObject(getNewExams(entity), new TypeReference<List<Map<String, String>>>(){});
+            if(newExams.size() == 1)
             {
-                finalExams.addAll(newExams);
+                newExams.get(0).put("name", entity);
+                finalExams.add(JSON.toJSONString(newExams.get(0)));
             }
-            else
+            else if(newExams.size() > 1)
             {
                 Collections.shuffle(newExams);
-                finalExams.add(newExams.get(0));
-                finalExams.add(newExams.get(1));
+                newExams.get(0).put("name", entity);
+                newExams.get(1).put("name", entity);
+                finalExams.add(JSON.toJSONString(newExams.get(0)));
+                finalExams.add(JSON.toJSONString(newExams.get(1)));
             }
         }
     }

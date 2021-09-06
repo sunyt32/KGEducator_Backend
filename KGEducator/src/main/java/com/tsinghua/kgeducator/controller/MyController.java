@@ -104,7 +104,7 @@ public class MyController
         codeMap.put(email, code);
         map = new HashMap<>();
         SimpleMailMessage message =	new SimpleMailMessage();
-        message.setFrom("1847767524@qq.com");
+        message.setFrom("sunyt32@163.com");
         message.setSubject("验证码");
         message.setTo(email);
         message.setText("您的验证码为：\n" + code);
