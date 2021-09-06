@@ -29,7 +29,7 @@ public class ExamService
     private final UserMapper userMapper;
     @Resource
     private RestTemplate restTemplate;
-    private static final int examNum = 20;
+    private static final int examNum = 10;
     private String id;
     public ExamService(ExamMapper examMapper, UserMapper userMapper)
     {
@@ -111,7 +111,7 @@ public class ExamService
                 inputExam.put("qAnswer", exam.realAns);
                 inputExam.put("id", exam.pid.toString());
                 inputExam.put("qBody", exam.body);
-                finalExams.add(inputExam.toString());
+                finalExams.add(JSON.toJSONString(inputExam));
             }
             if(finalExams.size() > 0.3 * examNum)
             {
