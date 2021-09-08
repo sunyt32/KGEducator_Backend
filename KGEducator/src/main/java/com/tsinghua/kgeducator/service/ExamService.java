@@ -27,29 +27,15 @@ public class ExamService
 {
     private final ExamMapper examMapper;
     private final UserMapper userMapper;
-    @Resource
-    private RestTemplate restTemplate;
+    private final WebService webService;
     private static final int examNum = 10;
-    private String id;
-    public ExamService(ExamMapper examMapper, UserMapper userMapper)
+    public ExamService(ExamMapper examMapper, UserMapper userMapper, WebService webService)
     {
         this.examMapper = examMapper;
         this.userMapper = userMapper;
+        this.webService = webService;
     }
-    @PostConstruct
-    public void initRestTemplate()
-    {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-        MultiValueMap<String, Object> postParameters = new LinkedMultiValueMap<>();
-        postParameters.add("password", "Syt20001121");
-        postParameters.add("phone", "18611157300");
-        HttpEntity<String> request = new HttpEntity(postParameters, headers);
-        String url = "http://open.edukg.cn/opedukg/api/typeAuth/user/login";
-        ResponseEntity<String> postForEntity = restTemplate.postForEntity(url, request, String.class);
-        HashMap<String, String> body = JSON.parseObject(postForEntity.getBody(),new TypeReference<HashMap<String, String>>(){});
-        id = body.get("id");
-    }
+
     public List<Exam> getAllExams()
     {
         return examMapper.getAllExams();
@@ -83,10 +69,10 @@ public class ExamService
     private String getNewExams(String name)
     {
         Map<String, Object> params = new HashMap<>();
-        params.put("id", id);
+        params.put("id", webService.getId());
         params.put("uriName", name);
         String url = "http://open.edukg.cn/opedukg/api/typeOpen/open/questionListByUriName?id={id}&uriName={uriName}";
-        ResponseEntity<String> getForEntity = restTemplate.getForEntity(url, String.class, params);
+        ResponseEntity<String> getForEntity = webService.restTemplate.getForEntity(url, String.class, params);
         HashMap<String, String> body = JSON.parseObject(getForEntity.getBody(),new TypeReference<HashMap<String, String>>(){});
         return body.get("data");
     }
@@ -95,7 +81,7 @@ public class ExamService
     {
         User user = userMapper.getUserById(userId);
         List<Exam> userExams = getWrongExamsByUserId(userId); // 从用户做过的错误习题中挑选出不到30%
-        HashSet<List<String>> userCollection = JSON.parseObject(user.collection, new TypeReference<HashSet<List<String>>>(){});// 从用户收藏过但没有测试过的知识点中挑选出不到50%
+        List<List<String>> userCollection = JSON.parseObject(user.collection, new TypeReference<List<List<String>>>(){});// 从用户收藏过但没有测试过的知识点中挑选出不到50%
         List<List<String>> userHistory = JSON.parseObject(user.history,new TypeReference<List<List<String>>>(){}); // 从用户浏览过但没有收藏过的知识点中挑选出剩余试题
         List<String> finalExams = new ArrayList<>();
         HashSet<String> entities = new HashSet<>();

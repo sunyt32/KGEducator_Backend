@@ -287,4 +287,17 @@ public class MyController
         return JSONObject.toJSONString(map);
     }
 
+    @RequestMapping (value = "/entity/recommend", method = RequestMethod.GET)
+    @ResponseBody
+    public String recommendEntity(HttpServletRequest request)
+    {
+        map = new HashMap<>();
+        User user = getUserByToken(request.getHeader("Token"));
+        List<String> entities = userService.recommendEntity(user);
+        map.put("data", entities.toString());
+        return JSONObject.toJSONString(map);
+    }
+
+
+
 }
