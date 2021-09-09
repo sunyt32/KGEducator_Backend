@@ -58,7 +58,7 @@ public class UserService
         userMapper.deleteAllUsers();
     }
 
-    private List<String> getRelatedEntity(String entity, String subject)
+    private List<String> getRelatedEntity(String entity, String subject) throws NullPointerException
     {
         List<String> relatedEntity = new ArrayList<>();
         Map<String, Object> params = new HashMap<>();
@@ -112,7 +112,11 @@ public class UserService
         List<String> relatedEntity;
         for(List<String> userEntity : userEntityList)
         {
-            relatedEntity = getRelatedEntity(userEntity.get(1), userEntity.get(0));
+            try {
+                relatedEntity = getRelatedEntity(userEntity.get(1), userEntity.get(0));
+            } catch (Exception e) {
+                return;
+            }
             for(String entity : relatedEntity)
             {
                 if(entities.containsKey(entity))
