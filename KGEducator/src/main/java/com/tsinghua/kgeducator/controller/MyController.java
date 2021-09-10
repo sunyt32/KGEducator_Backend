@@ -93,16 +93,16 @@ public class MyController
     @ResponseBody
     public String sendCode(HttpServletRequest request, HttpServletResponse response)
     {
+        map = new HashMap<>();
         String email = request.getParameter("email");
         if(userService.getUserByEmail(email) == null)
         {
-            map.put("msg", "User exists");
+            map.put("msg", "User doesn't exist");
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }
         Random r = new Random(System.currentTimeMillis());
         String code = String.valueOf(abs(r.nextInt()) % (999999 - 100000) + 100000);
         codeMap.put(email, code);
-        map = new HashMap<>();
         SimpleMailMessage message =	new SimpleMailMessage();
         message.setFrom("sunyt32@163.com");
         message.setSubject("验证码");
