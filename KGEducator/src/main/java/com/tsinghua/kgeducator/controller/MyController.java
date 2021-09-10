@@ -108,7 +108,7 @@ public class MyController
         message.setSubject("验证码");
         message.setTo(email);
         message.setText("您的验证码为：\n" + code);
-        javaMailSender.send(message);
+        new Thread(()-> javaMailSender.send(message)).start();
         map.put("msg", "Success");
         return JSONObject.toJSONString(map);
     }
